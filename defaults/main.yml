@@ -1,0 +1,7 @@
+---
+meteor_release: 1.9
+meteor_home: /usr/local/meteor
+meteor_install_tmpdir: /tmp/meteor
+meteor_user: meteor
+meteor_group: meteor
+meteor_url: "https://static-meteor.netdna-ssl.com/packages-bootstrap/{{ meteor_release }}/meteor-bootstrap-os.linux.x86_64.tar.gz"

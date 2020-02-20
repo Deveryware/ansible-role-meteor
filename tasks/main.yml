@@ -1,8 +1,27 @@
 ---
-# - Check if already installed with `grep BUNDLE_VERSION /usr/local/bin/meteor`
 - name: Check if Meteor is already installed
-  debug:
-    msg: "TODO"
+  stat:
+    path: "{{ meteor_home }}/meteor/meteor"
+  register: __meteor_stat
+
+- name: Check currently installed version if needed
+  set_fact:
+    __meteor_current_version: "{{ __meteor_stat.stat.lnk_target.split('/')[2] }}"
+  when: __meteor_stat.stat.exists
+
+- name: Adjust meteor release version if needed
+  set_fact:
+    __meteor_adjusted_release: "{{ meteor_release }}.0"
+  when:
+    - __meteor_stat.stat.exists
+    - meteor_release.split('.') | count == 2
+
+- name: Save the release number
+  set_fact:
+    __meteor_adjusted_release: "{{ meteor_release }}"
+  when:
+    - __meteor_stat.stat.exists
+    - meteor_release.split('.') | count == 3
 
 - name: Install a new release
   block:
@@ -23,26 +42,31 @@
   - name: Extract the archive
     unarchive:
       src: "{{ meteor_install_tmpdir }}/meteor-{{ meteor_release }}.tar.gz"
-      dest: "{{ meteor_install_tmpdir }}"
-      owner: "{{ meteor_user }}"
-      group: "{{ meteor_group }}"
-
-  - name: Move extracted files to Meteor home
-    copy:
-      src: "{{ meteor_install_tmpdir }}/.meteor/"
       dest: "{{ meteor_home }}"
       remote_src: yes
       owner: "{{ meteor_user }}"
       group: "{{ meteor_group }}"
+
+  - name: Unhide the Meteor folder
+    command:
+      cmd: "mv {{ meteor_home | quote }}/.meteor/ {{ meteor_home | quote }}/meteor"
+      creates: "{{ meteor_home }}/meteor"
 
   - name: Remove Meteor temp dir
     file:
       path: "{{ meteor_install_tmpdir }}"
       state: absent
 
+  when: not __meteor_stat.stat.exists or __meteor_current_version is version(__meteor_adjusted_release, "!=")
+
+- name: Re-stat meteor
+  stat:
+    path: "{{ meteor_home }}/meteor/meteor"
+  register: __meteor_stat
+
 - name: Ensure launch-meteor is symlinked
   file:
-    src: "{{ meteor_home }}/scripts/admin/launch-meteor"
+    src: "{{ __meteor_stat.stat.lnk_source | dirname }}/scripts/admin/launch-meteor"
     dest: /usr/local/bin/meteor
     state: link
     owner: root

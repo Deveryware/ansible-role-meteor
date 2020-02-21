@@ -64,9 +64,9 @@
     path: "{{ meteor_home }}/meteor/meteor"
   register: __meteor_stat
 
-- name: Ensure launch-meteor is symlinked
+- name: Ensure meteor is symlinked
   file:
-    src: "{{ __meteor_stat.stat.lnk_source | dirname }}/scripts/admin/launch-meteor"
+    src: "{{ wekan_run_directory }}/meteor/meteor"
     dest: /usr/local/bin/meteor
     state: link
     owner: root

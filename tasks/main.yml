@@ -1,7 +1,14 @@
 ---
+- name: Ensure meteor home exists
+  file:
+    path: "{{ meteor_home }}"
+    state: directory
+    owner: "{{ meteor_user }}"
+    group: "{{ meteor_group }}"
+
 - name: Check if Meteor is already installed
   stat:
-    path: "{{ meteor_home }}/meteor/meteor"
+    path: "{{ meteor_home }}/.meteor/meteor"
   register: __meteor_stat
 
 - name: Check currently installed version if needed
@@ -47,11 +54,6 @@
       owner: "{{ meteor_user }}"
       group: "{{ meteor_group }}"
 
-  - name: Unhide the Meteor folder
-    command:
-      cmd: "mv {{ meteor_home | quote }}/.meteor/ {{ meteor_home | quote }}/meteor"
-      creates: "{{ meteor_home }}/meteor"
-
   - name: Remove Meteor temp dir
     file:
       path: "{{ meteor_install_tmpdir }}"
@@ -59,14 +61,9 @@
 
   when: not __meteor_stat.stat.exists or __meteor_current_version is version(__meteor_adjusted_release, "!=")
 
-- name: Re-stat meteor
-  stat:
-    path: "{{ meteor_home }}/meteor/meteor"
-  register: __meteor_stat
-
 - name: Ensure meteor is symlinked
   file:
-    src: "{{ wekan_run_directory }}/meteor/meteor"
+    src: "{{ meteor_home }}/.meteor/meteor"
     dest: /usr/local/bin/meteor
     state: link
     owner: root

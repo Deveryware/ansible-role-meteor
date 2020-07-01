@@ -1,4 +1,15 @@
 ---
+- name: Ensure meteor group is created.
+  group:
+    name: "{{ meteor_group }}"
+
+- name: Ensure meteor user is created
+  user:
+    name: "{{ meteor_user }}"
+    group: "{{ meteor_group }}"
+    home: "{{ meteor_home }}"
+    shell: /bin/sh
+
 - name: Ensure meteor home exists
   file:
     path: "{{ meteor_home }}"

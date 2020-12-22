@@ -29,17 +29,17 @@
 
 - name: Adjust meteor release version if needed
   set_fact:
-    __meteor_adjusted_release: "{{ meteor_release }}.0"
+    __meteor_adjusted_release: "{{ __meteor_release }}.0"
   when:
     - __meteor_stat.stat.exists
-    - meteor_release.split('.') | count == 2
+    - __meteor_release.split('.') | count == 2
 
 - name: Save the release number
   set_fact:
-    __meteor_adjusted_release: "{{ meteor_release }}"
+    __meteor_adjusted_release: "{{ __meteor_release }}"
   when:
     - __meteor_stat.stat.exists
-    - meteor_release.split('.') | count == 3
+    - __meteor_release.split('.') | count == 3
 
 - name: Install a new release
   block:
@@ -53,13 +53,18 @@
   - name: Fetch Meteor release
     get_url:
       url: "{{ meteor_url }}"
-      dest: "{{ meteor_install_tmpdir }}/meteor-{{ meteor_release }}.tar.gz"
+      dest: "{{ meteor_install_tmpdir }}/meteor-{{ __meteor_release }}.tar.gz"
       owner: "{{ meteor_user }}"
       group: "{{ meteor_group }}"
 
+  - name: Remove previous Meteor install
+    file:
+      path: "{{ meteor_home }}/.meteor"
+      state: absent
+
   - name: Extract the archive
     unarchive:
-      src: "{{ meteor_install_tmpdir }}/meteor-{{ meteor_release }}.tar.gz"
+      src: "{{ meteor_install_tmpdir }}/meteor-{{ __meteor_release }}.tar.gz"
       dest: "{{ meteor_home }}"
       remote_src: yes
       owner: "{{ meteor_user }}"

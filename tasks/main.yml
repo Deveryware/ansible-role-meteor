@@ -27,19 +27,9 @@
     __meteor_current_version: "{{ __meteor_stat.stat.lnk_target.split('/')[2] }}"
   when: __meteor_stat.stat.exists
 
-- name: Adjust meteor release version if needed
+- name: Adjust Meteor release
   set_fact:
-    __meteor_adjusted_release: "{{ __meteor_release }}.0"
-  when:
-    - __meteor_stat.stat.exists
-    - __meteor_release.split('.') | count == 2
-
-- name: Save the release number
-  set_fact:
-    __meteor_adjusted_release: "{{ __meteor_release }}"
-  when:
-    - __meteor_stat.stat.exists
-    - __meteor_release.split('.') | count == 3
+    __meteor_adjusted_release: "{{ __meteor_release | meteor_version }}"
 
 - name: Install a new release
   block:

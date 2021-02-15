@@ -65,7 +65,7 @@
       path: "{{ meteor_install_tmpdir }}"
       state: absent
 
-  when: not __meteor_stat.stat.exists or __meteor_current_version is version(__meteor_adjusted_release, "!=")
+  when: not __meteor_stat.stat.exists or __meteor_current_version is version(__meteor_adjusted_release, "!=") or meteor_force_install
 
 - name: Ensure meteor is symlinked
   file:

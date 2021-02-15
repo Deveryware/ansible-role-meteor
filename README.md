@@ -10,6 +10,7 @@ None.
 
 | Variable                 | Description | Default |
 |--------------------------|-------------|---------|
+| `meteor_force_install`    | Force meteor installation   | `no` |
 | `meteor_group`            | Name of meteor system group | `meteor` |
 | `meteor_home`             | Path to meteor user's home  | `/usr/local/meteor` |
 | `meteor_install_tmpdir`   | Temporary directory used to fetch meteor releases | `/tmp/meteor` |

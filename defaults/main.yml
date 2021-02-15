@@ -1,6 +1,7 @@
 ---
 __meteor_release: "{{ meteor_release | mandatory }}"
 meteor_home: /usr/local/meteor
+meteor_force_install: no
 meteor_install_tmpdir: /tmp/meteor
 meteor_user: meteor
 meteor_group: meteor

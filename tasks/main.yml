@@ -36,7 +36,7 @@
   - name: Create Meteor temp dir
     file:
       path: "{{ meteor_install_tmpdir }}"
-      state: directory 
+      state: directory
       owner: "{{ meteor_user }}"
       group: "{{ meteor_group }}"
 

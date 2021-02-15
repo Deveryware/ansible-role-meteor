@@ -1,0 +1,15 @@
+galaxy_info:
+  role_name: meteor
+  author: Tristan Le Guern
+  description: Ansible role for the javascript framework Meteor
+  company: Deveryware
+  license: ISC
+  min_ansible_version: 2.7
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+  galaxy_tags:
+  - meteor
+  - javascript
+dependencies: []
